@@ -1,0 +1,118 @@
+﻿@model PhotoGallery.Models.PhotoModel
+
+@{
+    Layout = "_AdminLteLayout";
+    ViewData["Title"] = "Edit";
+}
+
+<style>
+    .card-img-top {
+        width: 200px;
+        height: 200px;
+    }
+</style>
+<h1>Edit</h1>
+
+<h4>PhotoModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label asp-for="CategoryId">Category</label>
+                <select asp-for="CategoryId" asp-items="@(new SelectList(ViewBag.CategoryList, "Id", "Title"))" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocationId">Location</label>
+                <select asp-for="LocationId" asp-items="@(new SelectList(ViewBag.LocationList, "Id", "Name"))" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group m-2">
+                <label asp-for="ImageFile">Upload Image</label>
+                <input asp-for="ImageFile" type="file" class="form-control-file" id="ImageFile" name="ImageFile" onchange="previewImage();" required />
+            </div>
+            <img id="preview" class="card-img-top img-thumbnail" src="data:image/png;base64,@Convert.ToBase64String(Model.Image)" alt="Card image cap">
+            <div class="form-group">
+                <input type="button" id="uploadButton" value="Update" class="btn btn-primary" style="margin-top: 15px;" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function previewImage() {
+            const fileInput = document.getElementById('ImageFile');
+            const preview = document.getElementById('preview');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block"; // Show the image element
+                }
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        $("#uploadButton").click(function () {
+            var Id = $('#Id').val();
+            var formData = new FormData();
+            formData.append("Id", $('#Id').val());
+            formData.append("CategoryId", $('#CategoryId').val());
+            formData.append("LocationId", $('#LocationId').val());
+            formData.append("Title", $('#Title').val());
+            formData.append("Description", $('#Description').val());
+            var photoFile = $('#ImageFile')[0].files[0];
+            console.log(photoFile);
+            if (photoFile && photoFile.size > 0) {
+                formData.append("ImageFile", photoFile);
+            } else {
+                formData.append("ImageFile", "");
+            }
+            
+            $.ajax({
+                url: "/Photo/Edit/"+ Id,
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data.respCode == "000") {
+                        SuccessMessageBoxWithLink('Photo Update is Successful', '/Photo/Index');
+                    } else if (data.respCode == "999") {
+                        ErrorMessageBox('Photo Update is Fail');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    ErrorMessageBox('You are not authorized to perform this action.');
+                }
+            });
+        });
+    </script>
+}

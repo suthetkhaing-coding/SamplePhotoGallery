@@ -1,0 +1,67 @@
+﻿@model PhotoGallery.Models.UserViewModel;
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="~/login/css/style.css" rel="stylesheet" />
+    <link href="~/login/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/login/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/login/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <form asp-controller="Login" asp-action="Login" method="post" style="height:100%">
+        <div class="form-01-main">
+            <div class="form-cover">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-sub-main">
+                                <div class="_main_head_as">
+                                    <a href="#">
+                                        <img src="~/login/images/profile.jpg">
+                                    </a>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="UserName" placeholder="UserName" class="form-control _ge_de_ol" type="text" placeholder="Enter Email" required="" aria-required="true">
+                                </div>
+
+                                <div class="form-group">
+                                    <input id="password" asp-for="Password" type="password" class="form-control" placeholder="********" required="required">
+                                    <i toggle="#password" class="fa fa-fw fa-eye toggle-password field-icon"></i>
+                                </div>
+
+                                <label>
+                                    <input type="checkbox" asp-for="KeepLoggedIn" />
+                                    Keep me logged In.
+                                </label>
+
+                                <div class="form-group">
+                                    <div class="btn_uy">
+                                        <button class="btn btn-success btn-sm" type="submit">Login</button>
+                                    </div>
+                                </div>
+
+                                @if (ViewData["ValidateMessage"] != null)
+                                {
+                                    <br />
+                                    <br />
+                                    <label>@ViewData["ValidateMessage"]</label>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
